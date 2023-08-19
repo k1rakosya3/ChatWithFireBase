@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import FirebaseFirestore
 
 class ChatViewController: UIViewController {
     
@@ -59,18 +60,20 @@ class ChatViewController: UIViewController {
     @IBAction func sendButton(_ sender: UIButton) {
         
         if let messegeBody = messegeTextField.text, let menageSender = Auth.auth().currentUser?.email {
-            db.collection(K.FStore.collectionName).addDocument(data: [
-                K.FStore.senderField : menageSender,
-                K.FStore.bodyField : messegeBody,
-                K.FStore.dateField : Date().timeIntervalSince1970
-            ]) { error in
-                if let e = error {
-                    print("error coming when we adding data in fireStore \(e.localizedDescription)")
-                } else {
-                    DispatchQueue.main.async {
-                        self.messegeTextField.text = ""
+            if messegeBody != "" {
+                db.collection(K.FStore.collectionName).addDocument(data: [
+                    K.FStore.senderField : menageSender,
+                    K.FStore.bodyField : messegeBody,
+                    K.FStore.dateField : Date().timeIntervalSince1970
+                ]) { error in
+                    if let e = error {
+                        print("error coming when we adding data in fireStore \(e.localizedDescription)")
+                    } else {
+                        DispatchQueue.main.async {
+                            self.messegeTextField.text = ""
+                        }
+                        print("Adding was sacsesfuly")
                     }
-                    print("Adding was sacsesfuly")
                 }
             }
         }
